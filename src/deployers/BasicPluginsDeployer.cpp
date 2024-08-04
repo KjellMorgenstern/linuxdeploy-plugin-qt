@@ -38,13 +38,19 @@ bool BasicPluginsDeployer::deployStandardQtPlugins(const std::vector<std::string
 {
     for (const auto &pluginName : plugins) {
         ldLog() << "Deploying Qt" << pluginName << "plugins" << std::endl;
+        fs::path pluginSubDir = pluginName;
+        // add a trailing slash, so it is used as a destination directory, not a file.
+        if (pluginSubDir.has_filename()) {
+            pluginSubDir += "/";
+        }
         for (fs::directory_iterator i(qtPluginsPath / pluginName); i != fs::directory_iterator(); ++i) {
-            if (!appDir.deployLibrary(*i, appDir.path() / "usr/plugins" / pluginName))
+            if (!appDir.deployLibrary(*i, appDir.path() / "usr/plugins" / pluginSubDir))
                 return false;
         }
     }
     return true;
 }
+
 
 bool BasicPluginsDeployer::doDeploy() {
     return true;
