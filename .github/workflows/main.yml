@@ -50,20 +50,3 @@ jobs:
           name: AppImage ${{ matrix.ARCH }}${{ matrix.USE_STATIC_RUNTIME}}
           path: linuxdeploy-plugin-qt${{ matrix.USE_STATIC_RUNTIME}}-${{ matrix.ARCH }}.AppImage*
 
-  upload:
-    name: Create release and upload artifacts
-    needs:
-      - build-and-test
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-      - name: Inspect directory after downloading artifacts
-        run: ls -alFR
-      - name: Create release and upload artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            wget -q https://github.com/TheAssassin/pyuploadtool/releases/download/continuous/pyuploadtool-x86_64.AppImage
-            chmod +x pyuploadtool-x86_64.AppImage
-            ./pyuploadtool-x86_64.AppImage **/linuxdeploy*.AppImage*
